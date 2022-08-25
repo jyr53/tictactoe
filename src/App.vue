@@ -7,8 +7,8 @@
       <p>regle du jeux</p>
 
     </div>
-    <input name="joueur1" type="text" v-model="joueur[0].joueur1" placeholder="joueur 1" />
-    <input name="joueur2" type="text" v-model="joueur[1].joueur2" placeholder="joueur 2" />
+    <input name="joueur1" type="text" v-model="joueur[0].joueur" placeholder="joueur 1" />
+    <input name="joueur2" type="text" v-model="joueur[1].joueur" placeholder="joueur 2" />
     <div></div>
     <button v-on:click="plus">GO</button>
 
@@ -20,12 +20,12 @@
     <div id="plateau">
       <div v-for="i in 9" :key=i :data-value=i v-on:click="jouer">| | </div>
     </div>
-    <p>{{ this.joueur[0].joueur1 }} {{ this.joueur[0].symbol }}</p>
-    <p>{{ this.joueur[1].joueur2 }} {{ this.joueur[1].symbol }}</p>
+    <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }}</p>
+    <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }}</p>
     <button v-on:click="plus">GO</button>
   </div>
   <div class="gagant" v-if="step == 3">
-    <h1>tu as gagné {{ }}</h1>
+    <h1>tu as gagné {{ this.gagne }}</h1>
   </div>
 
 </template>
@@ -41,6 +41,7 @@ export default {
       row: 3,
       col: 3,
       step: 1,
+      gagne: "",
       joueur: [{
         joueur: "",
         score: 0,
@@ -71,19 +72,18 @@ export default {
         this.pion = this.joueur[index].symbol;
         this.joueur[index].case_jouer.push(val);
         this.control.splice(val, 1, "x");
-        this.verif(index);
         this.tour_jeux++;
-
+        console.log(this.joueur[index].case_jouer.length);
+        console.log(this.row);
+        if (this.joueur[index].case_jouer.length >= this.row) {
+          this.verif(index);
+        }
       }
     },
-    verif(index) {
-      // this.nb_cell = this.row * this.col;
-
+    tab_verif() {
       let tab_gagne = [];
       let temp = [];
-
       for (let n = 0; n < this.row; n++) {
-
         temp.push((n * this.row) + 1);
         temp.push((n * this.row) + 2);
         temp.push((n * this.row) + 3);
@@ -105,10 +105,36 @@ export default {
       temp.push(this.row + (this.col - 1));
       temp.push(this.row + this.col + 1);
       tab_gagne.push(temp.join(''));
-      console.log(tab_gagne);
-      let kld = this.joueur[index].case_jouer;
+      return tab_gagne;
+    },
 
+    verif(index) {
+      let tab_verifi = this.tab_verif();
+      let kld = this.joueur[index].case_jouer;
+      console.log("jy suis");
+      let ret_kld = this.croissant(kld);
+      console.log(ret_kld);
+      kld = ret_kld.join('');
+
+      if (tab_verifi.findIndex(element => element == kld) != -1) {
+        this.gagne = this.joueur[index].joueur;
+        console.log(this.joueur[index].joueur);
+        this.step = this.step + 1;
+
+
+      }
       console.log(kld);
+      console.log(tab_verifi);
+
+    },
+    croissant(tab) {
+      for (let i = 0; tab.length < i; i++)
+        if (tab[i] > tab[i + 1]) {
+          let temp = tab[i];
+          tab[i] = tab[i + 1];
+          tab[i + 1] = temp;
+        }
+      return tab;
     }
   }
 }
