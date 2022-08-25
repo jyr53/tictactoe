@@ -37,9 +37,9 @@
 export default {
   data() {
     return {
-      nb_cell:0,
-      row:3,
-      col:3,
+      nb_cell: 0,
+      row: 3,
+      col: 3,
       step: 1,
       joueur: [{
         joueur: "",
@@ -77,12 +77,37 @@ export default {
       }
     },
     verif(index) {
-      this.nb_cell=this.row*this.col;
-      let tab_gagne:[];
-      for (let n=0 ;n < this.row;n++){
-        
+      // this.nb_cell = this.row * this.col;
+
+      let tab_gagne = [];
+      let temp = [];
+
+      for (let n = 0; n < this.row; n++) {
+
+        temp.push((n * this.row) + 1);
+        temp.push((n * this.row) + 2);
+        temp.push((n * this.row) + 3);
+        tab_gagne.push(temp.join(''));
+        temp = [];
+        temp.push(n + 1);
+        temp.push(n + 4);
+        temp.push(n + 7);
+        tab_gagne.push(temp.join(''))
+        temp = [];
       }
+      temp = [];
+      temp.push(1);
+      temp.push(this.row + (this.col - 1));
+      temp.push(this.row * this.col);
+      tab_gagne.push(temp.join(''));
+      temp = [];
+      temp.push(this.row);
+      temp.push(this.row + (this.col - 1));
+      temp.push(this.row + this.col + 1);
+      tab_gagne.push(temp.join(''));
+      console.log(tab_gagne);
       let kld = this.joueur[index].case_jouer;
+
       console.log(kld);
     }
   }
