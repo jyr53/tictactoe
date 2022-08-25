@@ -18,10 +18,10 @@
   <div class="jeu" v-if="step == 2">
     <h1>a vous de jouer</h1>
     <div id="plateau">
-      <div v-for="i in 9" :key=i :data-value=i v-on:click="jouer">| {{  }} | </div>
+      <div v-for="i in 9" :key=i :data-value=i v-on:click="jouer">| | </div>
     </div>
-    <p>{{ this.joueur[0].joueur1 }}</p>
-    <p>{{ this.joueur[1].joueur2 }}</p>
+    <p>{{ this.joueur[0].joueur1 }} {{ this.joueur[0].symbol }}</p>
+    <p>{{ this.joueur[1].joueur2 }} {{ this.joueur[1].symbol }}</p>
     <button v-on:click="plus">GO</button>
   </div>
   <div class="gagant" v-if="step == 3">
@@ -33,49 +33,62 @@
 <script>
 
 
+
 export default {
   data() {
     return {
-      bloc: 0,
-      pion: " ",
+      nb_cell:0,
+      row:3,
+      col:3,
       step: 1,
       joueur: [{
-        joueur1: "",
+        joueur: "",
+        score: 0,
         symbol: "X",
         case_jouer: []
       }, {
-        joueur2: "",
-        symbol2: "O",
-        case_jouer2: []
+        joueur: "",
+        score: 0,
+        symbol: "O",
+        case_jouer: []
       }],
-      tour_jeux: 1
+      tour_jeux: 1,
+      control: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     }
   },
 
   methods: {
     plus() {
       this.step = this.step + 1;
-
     },
     jouer(event) {
 
-      if (this.tour_jeux == 1 && this.bloc == 0) {
-        this.pion = this.joueur[0].symbol;
-        this.joueur[0].case_jouer.push(event.target.getAttribute('data-value'));
-        console.log(event.target.getAttribute('data-value'));
+      let val = event.target.getAttribute('data-value');
+      let auto = this.control.find(element => element == val);
+      if (auto == val) {
+        let index = this.tour_jeux % 2;
+        event.target.innerHTML = this.joueur[index].symbol;
+        this.pion = this.joueur[index].symbol;
+        this.joueur[index].case_jouer.push(val);
+        this.control.splice(val, 1, "x");
+        this.verif(index);
         this.tour_jeux++;
-        this.bloc = 1;
+
       }
-      if (this.tour_jeux == 2 && this.bloc == 0) {
-        this.pion = this.joueur[1].symbol2;
-        console.log(this.pion);
-        this.joueur[1].case_jouer2.push(this.id);
-        this.tour_jeux--;
+    },
+    verif(index) {
+      this.nb_cell=this.row*this.col;
+      let tab_gagne:[];
+      for (let n=0 ;n < this.row;n++){
+        
       }
+      let kld = this.joueur[index].case_jouer;
+      console.log(kld);
     }
   }
-
 }
+
+
 
 </script>
 
