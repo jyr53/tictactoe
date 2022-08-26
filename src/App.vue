@@ -32,6 +32,12 @@
     <button v-on:click="rejoue">REJOUE</button>
   </div>
 
+
+  <div class="gagant" v-if="step == 4">
+    <h1>vous etes ex eaquo</h1>
+    <button v-on:click="rejoue">REJOUE</button>
+  </div>
+
 </template>
 
 <script>
@@ -97,7 +103,9 @@ export default {
         if (this.joueur[index].case_jouer.length >= this.row) {
           this.controler(index);
         }
-
+      }
+      if (this.tour_jeux > 9) {
+        this.step = 4;
       }
     },
     tab_verif() {
@@ -189,8 +197,8 @@ export default {
       this.step = 2;
       this.joueur[0].case_jouer = [];
       this.joueur[1].case_jouer = [];
-
-
+      this.tour_jeux = 1;
+      this.affich_joueur(1);
     }
   }
 }
