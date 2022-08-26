@@ -18,7 +18,7 @@
   <div class="jeu" v-if="step == 2">
     <h1>a vous de jouer</h1>
     <div id="plateau">
-      <div v-for="i in 9" :key=i :data-value=i v-on:click="jouer">| | </div>
+      <div class="case"  v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
     </div>
     <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }}</p>
     <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }}</p>
@@ -73,10 +73,8 @@ export default {
         this.joueur[index].case_jouer.push(val);
         this.control.splice(val, 1, "x");
         this.tour_jeux++;
-        console.log(this.joueur[index].case_jouer.length);
-        console.log(this.row);
         if (this.joueur[index].case_jouer.length >= this.row) {
-          this.verif(index);
+          this.controler(index);
         }
       }
     },
@@ -108,14 +106,34 @@ export default {
       return tab_gagne;
     },
 
-    verif(index) {
-      let tab_verifi = this.tab_verif();
+    controler(index) { //permet de verifier le nombre de cout jouer pour la fin de partie
       let kld = this.joueur[index].case_jouer;
+      if (kld.length == 3) { //cas de trois
+        this.verif(kld, index);
+      }
 
-      let ret_kld = this.croissant(kld);
-      kld = ret_kld.join('');
+      if (kld.length > 3) { //cas plus de trois
+        let tab = this.croissant(kld);
 
-      if (tab_verifi.findIndex(element => element == kld) != -1) {
+        for (let i = 0; i < tab.length; i++) {
+          for (let j = i + 1; j < tab.length; j++) {
+            let k = j + 1
+            let temp = [];
+            temp.push(tab[i]);
+            temp.push(tab[j]);
+            temp.push(tab[k]);
+            this.verif(temp, index);
+          }
+        }
+
+      }
+
+    },
+    verif(kld, index) {
+      let tab_verifi = this.tab_verif();
+      let tab = this.croissant(kld);
+      let temp = tab.join('');
+      if (tab_verifi.findIndex(element => element == temp) != -1) {
         this.gagne = this.joueur[index].joueur;
         console.log(this.joueur[index].joueur);
         this.step = this.step + 1;
@@ -160,10 +178,16 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-
+.case{
+  border:1px solid black;
+  height: 100px;
+ line-height: 100px;
+ font: size 60px; 
+}
 #plateau {
   display: grid;
-  grid-auto-columns: minmax(3, auto);
-  grid-auto-rows: auto(3);
+  grid-template-columns: repeat(3, 1fr);
+  width: 300px;
+  margin: auto;
 }
 </style>
