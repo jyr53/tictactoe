@@ -18,14 +18,17 @@
   <div class="jeu" v-if="step == 2">
     <h1>a vous de jouer</h1>
     <div id="plateau">
-      <div class="case"  v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
+      <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
     </div>
-    <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }}</p>
-    <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }}</p>
-    <button v-on:click="plus">GO</button>
+    <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player2 }}</p>
+    <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player1 }}</p>
+
+
+
   </div>
   <div class="gagant" v-if="step == 3">
     <h1>tu as gagné {{ this.gagne }}</h1>
+    <button v-on:click="rejoue">REJOUE</button>
   </div>
 
 </template>
@@ -37,6 +40,8 @@
 export default {
   data() {
     return {
+      aff_player1: "",
+      aff_player2: "",
       nb_cell: 0,
       row: 3,
       col: 3,
@@ -46,11 +51,15 @@ export default {
         joueur: "",
         score: 0,
         symbol: "X",
+        player1: "c'est a toi de jouer",
+        player2: "",
         case_jouer: []
       }, {
         joueur: "",
         score: 0,
         symbol: "O",
+        player2: "c'est a toi de jouer",
+        player1: "",
         case_jouer: []
       }],
       tour_jeux: 1,
@@ -61,15 +70,23 @@ export default {
   methods: {
     plus() {
       this.step = this.step + 1;
+      this.affich_joueur();
     },
+
+    affich_joueur() {
+      let index = this.tour_jeux % 2;
+      this.aff_player1 = this.joueur[index].player1;
+      this.aff_player2 = this.joueur[index].player2;
+    },
+
     jouer(event) {
 
       let val = event.target.getAttribute('data-value');
       let auto = this.control.find(element => element == val);
       if (auto == val) {
         let index = this.tour_jeux % 2;
+        this.affich_joueur();
         event.target.innerHTML = this.joueur[index].symbol;
-        this.pion = this.joueur[index].symbol;
         this.joueur[index].case_jouer.push(val);
         this.control.splice(val, 1, "x");
         this.tour_jeux++;
@@ -135,7 +152,6 @@ export default {
       let temp = tab.join('');
       if (tab_verifi.findIndex(element => element == temp) != -1) {
         this.gagne = this.joueur[index].joueur;
-        console.log(this.joueur[index].joueur);
         this.step = this.step + 1;
       }
 
@@ -161,6 +177,14 @@ export default {
         }
       }
       return result;
+    },
+    rejoue() {
+      this.control = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      this.step = 2;
+      this.joueur[0].case_jouer = [];
+      this.joueur[1].case_jouer = [];
+
+
     }
   }
 }
@@ -178,12 +202,14 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.case{
-  border:1px solid black;
+
+.case {
+  border: 1px solid black;
   height: 100px;
- line-height: 100px;
- font: size 60px; 
+  line-height: 100px;
+  font: size 60px;
 }
+
 #plateau {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
