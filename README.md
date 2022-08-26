@@ -1,5 +1,10 @@
 # tictactoe
-
+ ce jeu de morpion as ete fait comme exercice de cours
+ avec une seul page programme
+ il sera decoupe ulterieurrement
+ si vous trouve des erreur merci de me laisse un petit message dans ce fichier
+ merci d'avoir pris le temp de regarde ce petit jeux
+ 
 ## Project setup
 ```
 npm install
