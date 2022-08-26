@@ -111,30 +111,38 @@ export default {
     verif(index) {
       let tab_verifi = this.tab_verif();
       let kld = this.joueur[index].case_jouer;
-      console.log("jy suis");
+
       let ret_kld = this.croissant(kld);
-      console.log(ret_kld);
       kld = ret_kld.join('');
 
       if (tab_verifi.findIndex(element => element == kld) != -1) {
         this.gagne = this.joueur[index].joueur;
         console.log(this.joueur[index].joueur);
         this.step = this.step + 1;
-
-
       }
-      console.log(kld);
-      console.log(tab_verifi);
+
 
     },
     croissant(tab) {
-      for (let i = 0; tab.length < i; i++)
+      for (let i = 0; tab.length > i; i++)
         if (tab[i] > tab[i + 1]) {
           let temp = tab[i];
           tab[i] = tab[i + 1];
           tab[i + 1] = temp;
         }
+      if (this.ordreCroissant(tab) == false) {
+        this.croissant(tab);
+      }
       return tab;
+    },
+    ordreCroissant(tableau) {
+      let result = true;
+      for (let index = 0; index < tableau.length; index++) {
+        if (tableau[index] > tableau[index + 1]) {
+          result = false;
+        }
+      }
+      return result;
     }
   }
 }
