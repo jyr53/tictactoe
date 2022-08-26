@@ -20,9 +20,10 @@
     <div id="plateau">
       <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
     </div>
-    <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player2 }}</p>
-    <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player1 }}</p>
-
+    <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player1 }}</p>
+    <p>score {{ this.joueur[0].score }}</p>
+    <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player2 }}</p>
+    <p>score {{ this.joueur[1].score }}</p>
 
 
   </div>
@@ -70,11 +71,12 @@ export default {
   methods: {
     plus() {
       this.step = this.step + 1;
-      this.affich_joueur();
+      this.affich_joueur(1);
     },
 
-    affich_joueur() {
-      let index = this.tour_jeux % 2;
+    affich_joueur(index) {
+
+
       this.aff_player1 = this.joueur[index].player1;
       this.aff_player2 = this.joueur[index].player2;
     },
@@ -85,14 +87,17 @@ export default {
       let auto = this.control.find(element => element == val);
       if (auto == val) {
         let index = this.tour_jeux % 2;
-        this.affich_joueur();
+        this.affich_joueur(index);
         event.target.innerHTML = this.joueur[index].symbol;
         this.joueur[index].case_jouer.push(val);
         this.control.splice(val, 1, "x");
         this.tour_jeux++;
+        let indeo = this.tour_jeux % 2;
+        this.affich_joueur(indeo);
         if (this.joueur[index].case_jouer.length >= this.row) {
           this.controler(index);
         }
+
       }
     },
     tab_verif() {
@@ -153,6 +158,7 @@ export default {
       if (tab_verifi.findIndex(element => element == temp) != -1) {
         this.gagne = this.joueur[index].joueur;
         this.step = this.step + 1;
+        this.joueur[index].score = this.joueur[index].score + 1;
       }
 
 
