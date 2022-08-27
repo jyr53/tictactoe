@@ -1,23 +1,58 @@
 
 <template>
   <div class="hello" v-if="step == 1">
-    <h1>Bienvenu dans le jeu de morpion</h1>
+    <h1 class="h1">Bienvenu dans le jeu de morpion</h1>
     <h2>Un peu d'histoire</h2>
     <p>TIC TAC TOE (jeu du morpion sur plateau)
-Petite Histoire : Ce jeu est d’origine japonaise. Il se joue dans les collèges et lycées français depuis la
-fin du XIXème. En France il est couramment appelé "jeu du morpion. Le but du jeu : faire un
-alignement de 5 cases soit horizontalement, soit verticalement, soit diagonalement en traçant un
-trait sur l’alignement réalisé (son trait mord les pions) La variante proposée ici se joue sur un plateau
-carré de 81 cases. Le plus souvent le jeu est pratiqué en utilisant une simple feuille de papier avec
-des carreaux</p>
+      Petite Histoire : Ce jeu est d’origine japonaise. Il se joue dans les collèges et lycées français depuis la
+      fin du XIXème. En France il est couramment appelé "jeu du morpion. Le but du jeu : faire un
+      alignement de 3 cases soit horizontalement, soit verticalement, soit diagonalement en traçant un
+      trait sur l’alignement réalisé (son trait mord les pions) </p>
 
     <div>
       <h2>Régle du jeux</h2>
+      <ul>
+        <li>Jeu qui se joue à deux joueurs, sur un damier de 3 cases par 3 cases.</li>
+        <li>Chaque joueur est représenté par un "symbole"</li>
+        <li>Un joueur utilise toujours le même type de "symbole"</li>
+        <li>Un premier joueur dessine son symbole sur une case. Puis c'est au tour de l'autre joueur de dessiner son
+          symbole sur une case vide.</li>
+        <li>Le but du jeu est de réussir à aligner ses trois symboles (horizontal, vertical ou diagonale), on remporte
+          alors la partie.</li>
+        <li>Si la grille est remplie et qu'aucune ligne ne comporte trois symboles identiques, les joueurs finissent par
+          un match nul.</li>
+      </ul>
 
     </div>
-    <input name="joueur1" type="text" v-model="joueur[0].joueur" placeholder="joueur 1" />
-    <input name="joueur2" type="text" v-model="joueur[1].joueur" placeholder="joueur 2" />
-    <div></div>
+    <div>
+      <input class="joueur" type="text" v-model="joueur[0].joueur" placeholder="joueur 1" />
+
+    </div>
+    <div>
+      <div id="v-model-select" class="">
+        <select v-model="this.joueur[0].symbol">
+          <option disabled value="">selectionnner un symbole</option>
+          <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{ this.picked[i] }}</option>
+        </select>
+
+      </div>
+
+
+
+    </div>
+    <div>
+      <input class="joueur" type="text" v-model="joueur[1].joueur" placeholder="joueur 2" />
+
+      <div id="v-model-select" class="demo">
+        <select v-model="this.joueur[1].symbol">
+          <option disabled value="">selectionnner un symbole</option>
+          <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{ this.picked[i] }}</option>
+        </select>
+
+      </div>
+    </div>
+
+
     <button v-on:click="plus">GO</button>
 
 
@@ -25,13 +60,15 @@ des carreaux</p>
 
   <div class="jeu" v-if="step == 2">
     <h1>a vous de jouer</h1>
-    <div id="plateau">
-      <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
-    </div>
+
     <div id="joueur1">
       <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player1 }}</p>
       <p>score {{ this.joueur[0].score }}</p>
     </div>
+    <div id="plateau">
+      <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
+    </div>
+
     <div id="joueur2">
       <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player2 }}</p>
       <p>score {{ this.joueur[1].score }}</p>
@@ -58,6 +95,8 @@ des carreaux</p>
 export default {
   data() {
     return {
+      picked: ["", "❃", "◎", "✘", "🛸", "✇", "△", "O", "🚗"],
+      recup: ["", "☮", "☘", "💋", "@", "☀", "🚒", "♕", "♘"],
       aff_player1: "",
       aff_player2: "",
       nb_cell: 0,
@@ -68,14 +107,14 @@ export default {
       joueur: [{//tableau des variables en objet
         joueur: "",
         score: 0,
-        symbol: "X",
+        symbol: "",
         player1: "c'est a toi de jouer",
         player2: "",
         case_jouer: []
       }, {
         joueur: "",
         score: 0,
-        symbol: "O",
+        symbol: "",
         player2: "c'est a toi de jouer",
         player1: "",
         case_jouer: []
@@ -86,14 +125,16 @@ export default {
   },
 
   methods: {
-    plus() {
+    select(event) { //permet d'echanger les symboles pour jouer
+      let indSymbol = event.target.getAttribute('data-value');
+      this.picked.splice(indSymbol, 1, this.recup[indSymbol]);
+    },
+    plus() {//pour commencer
       this.step = this.step + 1;
       this.affich_joueur(1);
     },
 
-    affich_joueur(index) {
-
-
+    affich_joueur(index) {//permet de savoir a qui de jouer
       this.aff_player1 = this.joueur[index].player1;
       this.aff_player2 = this.joueur[index].player2;
     },
@@ -150,14 +191,11 @@ export default {
       if (kld.length == 3) { //cas de trois
         this.verif(kld, index);
       }
-
       if (kld.length > 3) { //cas plus de trois
         let tab = this.croissant(kld);
-
         for (let i = 0; i < tab.length; i++) {
           for (let j = i + 1; j < tab.length; j++) {
             for (let k = j + 1; k < tab.length; k++) {
-
               let temp = [];
               temp.push(tab[i]);
               temp.push(tab[j]);
@@ -176,13 +214,12 @@ export default {
       let temp = tab.join('');
       if (tab_verifi.findIndex(element => element == temp) != -1) {
         this.gagne = this.joueur[index].joueur;
-        this.step = this.step + 1;
+        this.step = 3;
         this.joueur[index].score = this.joueur[index].score + 1;
       }
-      if (this.tour_jeux > 9) {//si pas de gagant  c'est ex eaquo
+      if (this.tour_jeux > 9 && this.step != 3) {//si pas de gagant  c'est ex eaquo
         this.step = 4;
       }
-
     },
     croissant(tab) {//tri en ordre croissant
       for (let i = 0; tab.length > i; i++)
@@ -215,9 +252,6 @@ export default {
     }
   }
 }
-
-
-
 </script>
 
 <style>
@@ -226,7 +260,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  background-color: burlywood;
   margin-top: 60px;
 }
 
@@ -237,11 +271,21 @@ export default {
 
 }
 
+#jeu {
+  display: flex;
+  flex: 2 1 auto;
+}
+
+
 #plateau {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: 300px;
   margin: auto;
-  font-size: 1.2em;
+  font-size: 100px;
+}
+
+.h1 {
+  font: blue;
 }
 </style>
