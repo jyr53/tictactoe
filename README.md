@@ -4,6 +4,9 @@
  il sera decoupe ulterieurrement
  si vous trouve des erreur merci de me laisse un petit message dans ce fichier
  merci d'avoir pris le temp de regarde ce petit jeux
+ un pile ou face pour  determine que commence a ete mis en palce 
+ par defaut c'est le joueur 2 qui commence
+ 
  
 ## Project setup
 ```

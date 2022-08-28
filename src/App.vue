@@ -1,26 +1,27 @@
 
 <template>
   <div class="hello" v-if="step == 1">
-    <h1 class="h1">Bienvenu dans le jeu de morpion</h1>
+    <h1 class="h1">Bienvenue dans le jeu du morpion</h1>
     <h2>Un peu d'histoire</h2>
-    <p>TIC TAC TOE (jeu du morpion sur plateau)
-      Petite Histoire : Ce jeu est d’origine japonaise. Il se joue dans les collèges et lycées français depuis la
+    <p>TIC TAC TOE
+      : Ce jeu est d’origine japonaise. Il se joue dans les collèges et lycées français depuis la
       fin du XIXème. En France il est couramment appelé "jeu du morpion. Le but du jeu : faire un
       alignement de 3 cases soit horizontalement, soit verticalement, soit diagonalement en traçant un
-      trait sur l’alignement réalisé (son trait mord les pions) </p>
+      trait sur l’alignement réalisé </p>
 
     <div>
-      <h2>Régle du jeux</h2>
+      <h2>Régle du jeu</h2>
       <ul>
-        <li>Jeu qui se joue à deux joueurs, sur un damier de 3 cases par 3 cases.</li>
+        <li>Deux joueurs, sur un damier de 3 cases sur 3 .</li>
         <li>Chaque joueur est représenté par un "symbole"</li>
-        <li>Un joueur utilise toujours le même type de "symbole"</li>
-        <li>Un premier joueur dessine son symbole sur une case. Puis c'est au tour de l'autre joueur de dessiner son
+        <li>Un joueur utilise toujours le même "symbole"</li>
+        <li>Un premier joueur pose son symbole sur une case.</li>
+        <li> Puis c'est au tour de l'autre joueur de poser son
           symbole sur une case vide.</li>
-        <li>Le but du jeu est de réussir à aligner ses trois symboles (horizontal, vertical ou diagonale), on remporte
-          alors la partie.</li>
+        <li>Le but est de réussir à aligner ses trois symboles en horizontal, en vertical ou en diagonale. </li>
+        <li>On remporte alors la partie.</li>
         <li>Si la grille est remplie et qu'aucune ligne ne comporte trois symboles identiques, les joueurs finissent par
-          un match nul.</li>
+          ex æquo.</li>
       </ul>
 
     </div>
@@ -34,34 +35,60 @@
           <option disabled value="">selectionnner un symbole</option>
           <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{ this.picked[i] }}</option>
         </select>
-
+        {{ this.joueur[0].symbol }}
       </div>
+      <div>
+        <div v-if="block == 0" id="v-model-radiobutton">
+          <input type="radio" id="one" value="pile" v-model="pileFace" :data-value=1 v-on:click="bloc" />
+          <label for="one">pile</label>
+          <br />
+          <input type="radio" id="two" value="face" v-model="pileFace" :data-value=0 v-on:click="bloc" />
+          <label for="two">face</label>
+          <br />
 
-
-
+        </div>
+        <span v-if="block == 1">coté {{ this.pileFace }}</span>
+        <div v-if="commence == 1">{{ this.joueur[0].joueur }} va commencer</div>
+      </div>
     </div>
     <div>
       <input class="joueur" type="text" v-model="joueur[1].joueur" placeholder="joueur 2" />
 
       <div id="v-model-select" class="demo">
         <select v-model="this.joueur[1].symbol">
-          <option disabled value="">selectionnner un symbole</option>
+          <option disabled value="selectionnez un symbole">selectionnner un symbole</option>
           <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{ this.picked[i] }}</option>
-        </select>
+        </select>{{ this.joueur[1].symbol }}
 
       </div>
     </div>
+    <div>
+      <div v-if="block == 0" id="v-model-radiobutton">
+        <input type="radio" id="one" value="pile" v-model="pileFace1" :data-value=11 v-on:click="bloc" />
+        <label for="one">pile</label>
+        <br />
+        <input type="radio" id="two" value="face" v-model="pileFace1" :data-value=10 v-on:click="bloc" />
+        <label for="two">face</label>
+        <br />
+      </div>
+      <span v-if="block == 1">coté {{ this.pileFace1 }}</span>
+      <div v-if="commence == 2">{{ this.joueur[1].joueur }} va commencer</div>
 
-
+    </div>
+    <div class="hazard">
+      <div class="piece" v-on:click="piece"></div>
+      <div>Cliker sur la piece pour savoir qui va commencer</div>
+    </div>
     <button v-on:click="plus">GO</button>
+    <div>Cliker sur go pour commencer a jouer</div>
 
-
+    <br>
   </div>
 
   <div class="jeu" v-if="step == 2">
-    <h1>a vous de jouer</h1>
+    <h1>A vous de jouer!</h1>
 
-    <div id="joueur1">
+    <div id="joueur1" class="joueur">
       <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player1 }}</p>
       <p>score {{ this.joueur[0].score }}</p>
     </div>
@@ -69,20 +96,27 @@
       <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
     </div>
 
-    <div id="joueur2">
+    <div id="joueur2" class="joueur">
       <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player2 }}</p>
       <p>score {{ this.joueur[1].score }}</p>
     </div>
 
   </div>
   <div class="gagant" v-if="step == 3">
-    <h1>tu as gagné {{ this.gagne }}</h1>
+    <h1>yesss!!!</h1>
+    <h2>Tu as gagné {{ this.gagne }}</h2>
+    <br>
+    <br>
     <button v-on:click="rejoue">REJOUE</button>
+    <br> <br> <br> <br>
   </div>
 
 
   <div class="gagant" v-if="step == 4">
-    <h1>vous etes ex eaquo</h1>
+    <h1>oh no!!!</h1>
+    <br>
+    <br>
+    <h2>Vous etes ex æquo</h2>
     <button v-on:click="rejoue">REJOUE</button>
   </div>
 
@@ -95,8 +129,10 @@
 export default {
   data() {
     return {
-      picked: ["", "❃", "◎", "✘", "🛸", "✇", "△", "O", "🚗"],
+      picked: ["", "❃", "⚽", "🦄", "🛸", "🎯", "🐼", "🐶", "🚗"],
       recup: ["", "☮", "☘", "💋", "@", "☀", "🚒", "♕", "♘"],
+      pileFace: "",
+      pileFace1: "",
       aff_player1: "",
       aff_player2: "",
       nb_cell: 0,
@@ -107,31 +143,73 @@ export default {
       joueur: [{//tableau des variables en objet
         joueur: "",
         score: 0,
-        symbol: "",
+        symbol: "X",
         player1: "c'est a toi de jouer",
         player2: "",
         case_jouer: []
       }, {
         joueur: "",
         score: 0,
-        symbol: "",
+        symbol: "O",
         player2: "c'est a toi de jouer",
         player1: "",
         case_jouer: []
       }],
       tour_jeux: 1,
+      block: 0,
+      commence: 0,
       control: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     }
   },
 
   methods: {
+    bloc(event) {// permet  de faire le pile ou face
+      let val = event.target.getAttribute('data-value');
+      if (this.block == 0) {
+        if (val == 1) {
+          this.pileFace1 = "face";
+          this.block = 1;
+        }
+        if (val == 0) {
+          this.pileFace1 = "pile";
+          this.block = 1;
+        }
+        if (val == 11) {
+          this.pileFace = "face";
+          this.block = 1;
+        }
+        if (val == 10) {
+          this.pileFace = "pile";
+          this.block = 1;
+        }
+      }
+    },
+    piece() {
+      let arr = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0];
+      let fde = arr[Math.floor(Math.random() * 10)];
+      let cote = "pile";
+      if (fde == 0) { cote = "face"; }
+      this.controlPiece(cote);
+    },
+    controlPiece(piece) {
+      if (piece == this.pileFace) {
+        this.tour_jeux = 0;
+        this.commence = 1;
+      }
+      if (piece == this.pileFace1) {
+        this.tour_jeux = 1;
+        this.commence = 2;
+      }
+    },
     select(event) { //permet d'echanger les symboles pour jouer
       let indSymbol = event.target.getAttribute('data-value');
+      let temp = this.picked[indSymbol];
       this.picked.splice(indSymbol, 1, this.recup[indSymbol]);
+      this.recup.splice(indSymbol, 1, temp);
     },
     plus() {//pour commencer
-      this.step = this.step + 1;
-      this.affich_joueur(1);
+      this.step = 2;
+      this.affich_joueur(this.tour_jeux);
     },
 
     affich_joueur(index) {//permet de savoir a qui de jouer
@@ -260,21 +338,30 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: burlywood;
+  background-color: rgb(176, 255, 252);
   margin-top: 60px;
 }
 
 .case {
-  border: 1px solid black;
+  border: 2px solid black;
   height: 100px;
   line-height: 100px;
+  background-color: white;
 
 }
 
-#jeu {
-  display: flex;
-  flex: 2 1 auto;
+.jeu {
+ 
+  text-decoration: white;
+  background-image: url("/fond_herbe.jpg");
 }
+
+.joueur {
+ 
+  width: 100px;
+  background-color: white;
+}
+
 
 
 #plateau {
@@ -285,7 +372,21 @@ export default {
   font-size: 100px;
 }
 
-.h1 {
-  font: blue;
+.hazard {
+
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.piece {
+  width: 30px;
+  height: 30px;
+  writing-mode: horizontal-tb;
+  background-image: url("/euro.svg");
+  background-repeat: no-repeat;
+  background: size 5%;
+  cursor: pointer;
 }
 </style>
