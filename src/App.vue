@@ -88,7 +88,7 @@
   <div class="jeu" v-if="step == 2">
     <h1>A vous de jouer!</h1>
 
-    <div id="joueur1" class="joueur">
+    <div id="joueur1" class="tabjoueur">
       <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player1 }}</p>
       <p>score {{ this.joueur[0].score }}</p>
     </div>
@@ -96,7 +96,7 @@
       <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
     </div>
 
-    <div id="joueur2" class="joueur">
+    <div id="joueur2" class="tabjoueur">
       <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player2 }}</p>
       <p>score {{ this.joueur[1].score }}</p>
     </div>
@@ -140,6 +140,9 @@ export default {
       col: 3,
       step: 1,
       gagne: "",
+      tour_jeux: 1,
+      block: 0,
+      commence: 0,
       joueur: [{//tableau des variables en objet
         joueur: "",
         score: 0,
@@ -155,9 +158,7 @@ export default {
         player1: "",
         case_jouer: []
       }],
-      tour_jeux: 1,
-      block: 0,
-      commence: 0,
+      tab_gagne: [],
       control: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     }
   },
@@ -210,6 +211,7 @@ export default {
     plus() {//pour commencer
       this.step = 2;
       this.affich_joueur(this.tour_jeux);
+      this.tab_verif();
     },
 
     affich_joueur(index) {//permet de savoir a qui de jouer
@@ -237,31 +239,29 @@ export default {
 
     },
     tab_verif() {//tableau de verification  a peaufine
-      let tab_gagne = [];
       let temp = [];
       for (let n = 0; n < this.row; n++) {
         temp.push((n * this.row) + 1);
         temp.push((n * this.row) + 2);
         temp.push((n * this.row) + 3);
-        tab_gagne.push(temp.join(''));
+        this.tab_gagne.push(temp.join(''));
         temp = [];
         temp.push(n + 1);
         temp.push(n + 4);
         temp.push(n + 7);
-        tab_gagne.push(temp.join(''))
+        this.tab_gagne.push(temp.join(''))
         temp = [];
       }
       temp = [];
       temp.push(1);
       temp.push(this.row + (this.col - 1));
       temp.push(this.row * this.col);
-      tab_gagne.push(temp.join(''));
+      this.tab_gagne.push(temp.join(''));
       temp = [];
       temp.push(this.row);
       temp.push(this.row + (this.col - 1));
       temp.push(this.row + this.col + 1);
-      tab_gagne.push(temp.join(''));
-      return tab_gagne;
+      this.tab_gagne.push(temp.join(''));
     },
 
     controler(index) { //permet de verifier le nombre de cout jouer pour la fin de partie
@@ -287,10 +287,9 @@ export default {
 
     },
     verif(kld, index) {//verification si ca match avec le tableau de resultat
-      let tab_verifi = this.tab_verif();
       let tab = this.croissant(kld);
       let temp = tab.join('');
-      if (tab_verifi.findIndex(element => element == temp) != -1) {
+      if (this.tab_gagne.findIndex(element => element == temp) != -1) {
         this.gagne = this.joueur[index].joueur;
         this.step = 3;
         this.joueur[index].score = this.joueur[index].score + 1;
@@ -338,7 +337,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: rgb(176, 255, 252);
+  background-color: rgb(164, 241, 75);
+  font-weight: bold;
   margin-top: 60px;
 }
 
@@ -347,22 +347,13 @@ export default {
   height: 100px;
   line-height: 100px;
   background-color: white;
-
 }
 
 .jeu {
- 
-  text-decoration: white;
-  background-image: url("/fond_herbe.jpg");
+  /* color: white;*/
+  font-weight: bold;
+  /* background-image: url("/fond_herbe.jpg");*/
 }
-
-.joueur {
- 
-  width: 100px;
-  background-color: white;
-}
-
-
 
 #plateau {
   display: grid;
@@ -373,7 +364,6 @@ export default {
 }
 
 .hazard {
-
   height: 100%;
   display: flex;
   align-items: center;
