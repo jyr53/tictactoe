@@ -33,9 +33,9 @@
       <div id="v-model-select" class="">
         <select v-model="this.joueur[0].symbol">
           <option disabled value="">selectionnner un symbole</option>
-          <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{ this.picked[i] }}</option>
+          <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{  this.picked[i]  }}</option>
         </select>
-        {{ this.joueur[0].symbol }}
+        {{  this.joueur[0].symbol  }}
       </div>
       <div>
         <div v-if="block == 0" id="v-model-radiobutton">
@@ -47,18 +47,18 @@
           <br />
 
         </div>
-        <span v-if="block == 1">coté {{ this.pileFace }}</span>
-        <div v-if="commence == 1">{{ this.joueur[0].joueur }} va commencer</div>
+        <span v-if="block == 1">coté {{  this.pileFace  }}</span>
+        <div v-if="commence == 1">{{  this.joueur[0].joueur  }} va commencer</div>
       </div>
     </div>
     <div>
       <input class="joueur" type="text" v-model="joueur[1].joueur" placeholder="joueur 2" />
 
-      <div id="v-model-select" class="demo">
+      <div id="v-model-select" class="">
         <select v-model="this.joueur[1].symbol">
           <option disabled value="selectionnez un symbole">selectionnner un symbole</option>
-          <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{ this.picked[i] }}</option>
-        </select>{{ this.joueur[1].symbol }}
+          <option v-for="i in 8" :key=i :data-value=i v-on:click="select">{{  this.picked[i]  }}</option>
+        </select>{{  this.joueur[1].symbol  }}
 
       </div>
     </div>
@@ -71,8 +71,8 @@
         <label for="two">face</label>
         <br />
       </div>
-      <span v-if="block == 1">coté {{ this.pileFace1 }}</span>
-      <div v-if="commence == 2">{{ this.joueur[1].joueur }} va commencer</div>
+      <span v-if="block == 1">coté {{  this.pileFace1  }}</span>
+      <div v-if="commence == 2">{{  this.joueur[1].joueur  }} va commencer</div>
 
     </div>
     <div class="hazard">
@@ -89,22 +89,22 @@
     <h1>A vous de jouer!</h1>
 
     <div id="joueur1" class="tabjoueur">
-      <p>{{ this.joueur[0].joueur }} {{ this.joueur[0].symbol }} {{ this.aff_player1 }}</p>
-      <p>score {{ this.joueur[0].score }}</p>
+      <p>{{  this.joueur[0].joueur  }} {{  this.joueur[0].symbol  }} {{  this.aff_player1  }}</p>
+      <p>score {{  this.joueur[0].score  }}</p>
     </div>
     <div id="plateau">
       <div class="case" v-for="i in 9" :key=i :data-value=i v-on:click="jouer"></div>
     </div>
 
     <div id="joueur2" class="tabjoueur">
-      <p>{{ this.joueur[1].joueur }} {{ this.joueur[1].symbol }} {{ this.aff_player2 }}</p>
-      <p>score {{ this.joueur[1].score }}</p>
+      <p>{{  this.joueur[1].joueur  }} {{  this.joueur[1].symbol  }} {{  this.aff_player2  }}</p>
+      <p>score {{  this.joueur[1].score  }}</p>
     </div>
 
   </div>
   <div class="gagant" v-if="step == 3">
     <h1>yesss!!!</h1>
-    <h2>Tu as gagné {{ this.gagne }}</h2>
+    <h2>Tu as gagné {{  this.gagne  }}</h2>
     <br>
     <br>
     <button v-on:click="rejoue">REJOUE</button>
@@ -264,7 +264,7 @@ export default {
       this.tab_gagne.push(temp.join(''));
     },
 
-    controler(index) { //permet de verifier le nombre de cout jouer pour la fin de partie
+    controler(index) { //permet de verifier avec le tab gagne etle nombre de cout jouer pour la fin de partie
       let kld = this.joueur[index].case_jouer;
       if (kld.length == 3) { //cas de trois
         this.verif(kld, index);
@@ -337,22 +337,25 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: rgb(164, 241, 75);
+  background-size: 100%;
+  background-image: url("/fond.jpg");
+  border-collapse: collapse;
   font-weight: bold;
-  margin-top: 60px;
+
 }
 
 .case {
-  border: 2px solid black;
+  border: 2px outset #8DAA9D;
   height: 100px;
   line-height: 100px;
   background-color: white;
 }
 
 .jeu {
-  /* color: white;*/
+  color: #7b0828;
   font-weight: bold;
-  /* background-image: url("/fond_herbe.jpg");*/
+  height: 100%;
+
 }
 
 #plateau {
@@ -379,4 +382,11 @@ export default {
   background: size 5%;
   cursor: pointer;
 }
+
+.gagnant {
+  color: #522b47;
+  height: 100vh;
+  width: 100vw;
+}
+
 </style>
